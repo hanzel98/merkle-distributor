@@ -1,0 +1,12 @@
+# Builds
+build
+
+
+# Optional npm cache directory
+.npm
+
+# dependencies
+/node_modules
+
+# compiled contracts
+/contracts
