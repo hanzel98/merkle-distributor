@@ -5,7 +5,7 @@ const { BigNumber, constants } =  require('ethers');
 const BalanceTree =  require('../src/balance-tree');
 const Distributor =  require('../build/MerkleDistributor.json');
 const TestERC20 =  require('../build/TestERC20.json');
-const { parseBalanceMap } =  require('../src/parse-balance-map');
+const parseBalanceMap =  require('../src/parse-balance-map');
 
 chai.use(solidity);
 const overrides = {
@@ -226,54 +226,54 @@ describe('MerkleDistributor', () => {
             });
         });
     });
-    // describe('parseBalanceMap', () => {
-    //     let distributor;
-    //     let claims;
-    //     beforeEach('deploy', async () => {
-    //         const { claims: innerClaims, merkleRoot, tokenTotal } = parseBalanceMap({
-    //             [wallet0.address]: 200,
-    //             [wallet1.address]: 300,
-    //             [wallets[2].address]: 250,
-    //         });
-    //         expect(tokenTotal).to.eq('0x02ee'); // 750
-    //         claims = innerClaims;
-    //         distributor = await deployContract(wallet0, Distributor, [token.address, merkleRoot], overrides);
-    //         await token.setBalance(distributor.address, tokenTotal);
-    //     });
-    //     it('check the proofs is as expected', () => {
-    //         expect(claims).to.deep.eq({
-    //             [wallet0.address]: {
-    //                 index: 0,
-    //                 amount: '0xc8',
-    //                 proof: ['0x2a411ed78501edb696adca9e41e78d8256b61cfac45612fa0434d7cf87d916c6'],
-    //             },
-    //             [wallet1.address]: {
-    //                 index: 1,
-    //                 amount: '0x012c',
-    //                 proof: [
-    //                     '0xbfeb956a3b705056020a3b64c540bff700c0f6c96c55c0a5fcab57124cb36f7b',
-    //                     '0xd31de46890d4a77baeebddbd77bf73b5c626397b73ee8c69b51efe4c9a5a72fa',
-    //                 ],
-    //             },
-    //             [wallets[2].address]: {
-    //                 index: 2,
-    //                 amount: '0xfa',
-    //                 proof: [
-    //                     '0xceaacce7533111e902cc548e961d77b23a4d8cd073c6b68ccf55c62bd47fc36b',
-    //                     '0xd31de46890d4a77baeebddbd77bf73b5c626397b73ee8c69b51efe4c9a5a72fa',
-    //                 ],
-    //             },
-    //         });
-    //     });
-    //     it('all claims work exactly once', async () => {
-    //         for (let account in claims) {
-    //             const claim = claims[account];
-    //             await expect(distributor.claim(claim.index, account, claim.amount, claim.proof, overrides))
-    //                 .to.emit(distributor, 'Claimed')
-    //                 .withArgs(claim.index, account, claim.amount);
-    //             await expect(distributor.claim(claim.index, account, claim.amount, claim.proof, overrides)).to.be.revertedWith('MerkleDistributor: Drop already claimed.');
-    //         }
-    //         expect(await token.balanceOf(distributor.address)).to.eq(0);
-    //     });
-    // });
+    describe('parseBalanceMap', () => {
+        let distributor;
+        let claims;
+        beforeEach('deploy', async () => {
+            const { claims: innerClaims, merkleRoot, tokenTotal } = parseBalanceMap({
+                [wallet0.address]: 200,
+                [wallet1.address]: 300,
+                [wallets[2].address]: 250,
+            });
+            expect(tokenTotal).to.eq('0x02ee'); // 750
+            claims = innerClaims;
+            distributor = await deployContract(wallet0, Distributor, [token.address, merkleRoot], overrides);
+            await token.setBalance(distributor.address, tokenTotal);
+        });
+        it('check the proofs is as expected', () => {
+            expect(claims).to.deep.eq({
+                [wallet0.address]: {
+                    index: 0,
+                    amount: '0xc8',
+                    proof: ['0x2a411ed78501edb696adca9e41e78d8256b61cfac45612fa0434d7cf87d916c6'],
+                },
+                [wallet1.address]: {
+                    index: 1,
+                    amount: '0x012c',
+                    proof: [
+                        '0xbfeb956a3b705056020a3b64c540bff700c0f6c96c55c0a5fcab57124cb36f7b',
+                        '0xd31de46890d4a77baeebddbd77bf73b5c626397b73ee8c69b51efe4c9a5a72fa',
+                    ],
+                },
+                [wallets[2].address]: {
+                    index: 2,
+                    amount: '0xfa',
+                    proof: [
+                        '0xceaacce7533111e902cc548e961d77b23a4d8cd073c6b68ccf55c62bd47fc36b',
+                        '0xd31de46890d4a77baeebddbd77bf73b5c626397b73ee8c69b51efe4c9a5a72fa',
+                    ],
+                },
+            });
+        });
+        it('all claims work exactly once', async () => {
+            for (let account in claims) {
+                const claim = claims[account];
+                await expect(distributor.claim(claim.index, account, claim.amount, claim.proof, overrides))
+                    .to.emit(distributor, 'Claimed')
+                    .withArgs(claim.index, account, claim.amount);
+                await expect(distributor.claim(claim.index, account, claim.amount, claim.proof, overrides)).to.be.revertedWith('MerkleDistributor: Drop already claimed.');
+            }
+            expect(await token.balanceOf(distributor.address)).to.eq(0);
+        });
+    });
 });
