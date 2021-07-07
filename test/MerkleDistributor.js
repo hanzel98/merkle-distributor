@@ -25,7 +25,7 @@ describe('MerkleDistributor', () => {
     const [wallet0, wallet1] = wallets;
     let token;
     beforeEach('deploy token', async () => {
-        token = await deployContract(wallet0, TestERC20, ['Token', 'TKN', 0], overrides);
+        token = await deployContract(wallet0, TestERC20, ['Evaluation Test Coins', 'ETC', 0], overrides);
     });
     describe('#token', () => {
         it('returns the token address', async () => {
