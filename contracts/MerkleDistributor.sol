@@ -17,6 +17,7 @@ contract MerkleDistributor is IMerkleDistributor {
         merkleRoot = merkleRoot_;
     }
 
+    // Returns true if the index of the node already claimed the tokens
     function isClaimed(uint256 index) public view override returns (bool) {
         uint256 claimedWordIndex = index / 256;
         uint256 claimedBitIndex = index % 256;
@@ -25,16 +26,18 @@ contract MerkleDistributor is IMerkleDistributor {
         return claimedWord & mask == mask;
     }
 
+    // Marks the node index as claimed
     function _setClaimed(uint256 index) private {
         uint256 claimedWordIndex = index / 256;
         uint256 claimedBitIndex = index % 256;
         claimedBitMap[claimedWordIndex] = claimedBitMap[claimedWordIndex] | (1 << claimedBitIndex);
     }
 
+    // Transfers the ERC20 tokens after validating that the node has a valid proof
     function claim(uint256 index, address account, uint256 amount, bytes32[] calldata merkleProof) external override {
         require(!isClaimed(index), 'MerkleDistributor: Drop already claimed.');
 
-        // Verify the merkle proof.
+        // Verify the merkle proof. It hashes the index, account and amount.
         bytes32 node = keccak256(abi.encodePacked(index, account, amount));
         require(MerkleProof.verify(merkleProof, merkleRoot, node), 'MerkleDistributor: Invalid proof.');
 

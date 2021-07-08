@@ -1,7 +1,6 @@
-const { program } =  require('commander');
-const fs =  require('fs');
-const axios =  require('axios');
-
+const { program } = require('commander');
+const fs = require('fs');
+const axios = require('axios');
 
 const BATCH_SIZE = 10_000;
 
@@ -11,7 +10,7 @@ program
   .requiredOption('-c, --chain-id <number>', 'chain ID of the merkle kv root')
   .requiredOption('-t, --token <string>', 'Cloudflare API token')
   .requiredOption('-a, --account-identifier <string>', 'Cloudflare account identifier')
-  .requiredOption('-n, --namespace-identifier <string>', 'Cloudflare KV namespace identifier')
+  .requiredOption('-n, --namespace-identifier <string>', 'Cloudflare KV namespace identifier');
 
 program.parse(process.argv);
 
@@ -20,8 +19,8 @@ const json = JSON.parse(fs.readFileSync(program.input, { encoding: 'utf8' }));
 if (typeof json !== 'object') throw new Error('Invalid JSON');
 
 async function main() {
-  const KV = Object.keys(json.claims).map((account) => {
-    const claim = json.claims[account]
+  const KV = Object.keys(json.claims).map(account => {
+    const claim = json.claims[account];
     return {
       key: `${program.chainId}:${account}`,
       value: JSON.stringify(claim),
@@ -37,9 +36,9 @@ async function main() {
         {
           maxBodyLength: Infinity,
           headers: { Authorization: `Bearer ${program.token}`, 'Content-Type': 'application/json' },
-        }
+        },
       )
-      .then((response) => {
+      .then(response => {
         if (!response.data.success) {
           throw Error(response.data.errors);
         }
