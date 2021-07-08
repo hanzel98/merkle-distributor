@@ -3,7 +3,7 @@
   "author": {
     "name": "Hanzel Anchia Mena"
   },
-  "description": "📦 A smart contract that distributes a balance of tokens according to a merkle root",
+  "description": "Merkle distributor example used to send ERC20 tokens according to a merkle root",
   "version": "0.0.0",
   "repository": {
     "type": "git",
