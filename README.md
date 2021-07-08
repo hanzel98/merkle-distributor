@@ -24,3 +24,7 @@ The following assumes the use of `node@>=10`.
 3. Compile the smart contracts by running `npm run compile`
 
 4. Run the tests `npm run test`
+
+## Tests video demo
+
+[Watch video](https://youtu.be/C2iR4zkK8Oc).
